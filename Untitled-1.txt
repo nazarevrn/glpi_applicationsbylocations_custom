@@ -1,0 +1,135 @@
+версии и их id по имени ПО
+
+SELECT
+	s.id as softId,
+	s.name as softName,
+	sv.id as versionId,
+	sv.name as versionName
+FROM 
+     glpi_softwares s
+LEFT JOIN
+	glpi_softwareversions sv ON sv.softwares_id = s.id
+WHERE s.name = 'Autodesk 360'
+
+все пк с версиями ПО
+
+SELECT 
+	computers_id
+FROM 
+	glpi_computers_softwareversions
+WHERE
+	softwareversions_id 	IN (
+		SELECT
+			sv.id as versionId
+		FROM 
+			glpi_softwares s
+		LEFT JOIN
+			glpi_softwareversions sv ON sv.softwares_id = s.id
+		WHERE s.name = 'Autodesk 360'
+	)
+	AND
+	is_deleted_computer != 1
+
+имена ПК с нужным ПО
+
+SELECT
+	name
+FROM 
+	glpi_computers
+WHERE
+	id IN (
+		SELECT 
+			computers_id
+		FROM 
+			glpi_computers_softwareversions
+		WHERE
+			softwareversions_id 	IN (
+				SELECT
+					sv.id as versionId
+				FROM 
+					glpi_softwares s
+				LEFT JOIN
+					glpi_softwareversions sv ON sv.softwares_id = s.id
+				WHERE s.name = 'Autodesk 360'
+				)
+		AND
+		is_deleted_computer != 1)
+
+пользователи ПК
+
+SELECT
+	*
+FROM
+	glpi_users u
+WHERE u.id IN (
+	SELECT
+		pc.users_id
+	FROM 
+		glpi_computers pc
+	WHERE
+	id IN (
+		SELECT 
+			pc_ver.computers_id
+		FROM 
+			glpi_computers_softwareversions pc_ver
+		WHERE
+			pc_ver.softwareversions_id 	IN (
+				SELECT
+					sv.id as versionId
+				FROM 
+					glpi_softwares s
+				LEFT JOIN
+					glpi_softwareversions sv ON sv.softwares_id = s.id
+				WHERE s.name = 'Autodesk 360'
+				)
+		AND
+		pc_ver.is_deleted_computer != 1)
+		)
+
+
+что-то похожее на нужный запрос
+
+SELECT
+	pc.users_id as userId,
+	us.name as userName,
+	pc.name as pcName,
+	l.name
+FROM 
+	glpi_computers pc
+LEFT JOIN 
+    glpi_users us ON us.id = pc.users_id AND us.is_active = 1
+LEFT JOIN
+	glpi_locations l ON l.id = us.locations_id
+WHERE
+	pc.id IN (
+		SELECT 
+			pc_ver.computers_id
+		FROM 
+			glpi_computers_softwareversions pc_ver
+		WHERE
+			pc_ver.softwareversions_id 	IN (
+				SELECT
+					sv.id as versionId
+				FROM 
+					glpi_softwares s
+				LEFT JOIN
+					glpi_softwareversions sv ON sv.softwares_id = s.id
+				WHERE s.name LIKE '%JetBrains%'
+				)
+		AND
+		pc_ver.is_deleted_computer != 1)
+
+имена всех версий по части имени
+SELECT
+	soft.name
+FROM
+	glpi_softwares soft
+WHERE 
+	soft.id IN (
+	SELECT
+		sv.softwares_id as softid 
+	FROM 
+		glpi_softwares s
+	LEFT JOIN
+		glpi_softwareversions sv ON sv.softwares_id = s.id
+	WHERE s.name LIKE '%JetBrains%'
