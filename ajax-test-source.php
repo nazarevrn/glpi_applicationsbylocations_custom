@@ -23,12 +23,8 @@ function generateQuery($param, $value) {
             $sqlParams = "";
             $sqlWhere = $value;
     }
-    //$sqlWhere = "s.name LIKE '%" . $enteredName . "%'";
-
-
 
     $sql =  "
-    
         SELECT
             us.id as userId,
             us.name as userName,
@@ -82,10 +78,6 @@ function generateQuery($param, $value) {
             pc.name
         ORDER BY
             pc.name	
-
-    
-    
-    
     ";
 
     $json = [
@@ -100,12 +92,8 @@ switch ($_GET['action']) {
     case 'getNamesForSelect' :
         $selectedName = $DB->escape($_GET['selectedName']);
         $result = $DB->query("SELECT `id`, `name` FROM glpi_softwares WHERE `name` LIKE '%" . $selectedName . "%'");
-        //print '<pre>';
+
         while ($data = $DB->fetch_assoc($result)) {
-            // print '<pre>';
-            // print_r($data['id']);
-            // print_r($data['name']);
-            // print '</pre>';
             $json['results'][] = [
                 'text' => $data['name'] . ' ' . $data['id'],
                 'id'    => $data['id']
@@ -116,17 +104,11 @@ switch ($_GET['action']) {
         echo json_encode($json);
         break;
     case 'getVersionsForSelect' :
-        //getVersionsForSelect
-        $selectedId = $DB->escape($_GET['selectedSoftId']);
-        //$versionId = $DB->escape($_GET['selectedVersion']);
-        
+        $selectedId = $DB->escape($_GET['selectedSoftId']);        
         $result = $DB->query("SELECT `id`, `name` FROM glpi_softwareversions WHERE softwares_id = $selectedId");
 
         while ($data = $DB->fetch_assoc($result)) {
-            // print '<pre>';
-            // print_r($data['id']);
-            // print_r($data['name']);
-            // print '</pre>';
+
             $json['results'][] = [
                 'text' => $data['name'],
                 'id'    => $data['id']
@@ -135,14 +117,13 @@ switch ($_GET['action']) {
         }
         echo json_encode($json);
         break;
+
     case 'setSoftId' :
-        //echo 'softid ' . $_GET['id'];
         $selectedId = $DB->escape($_GET['id']);
         echo generateQuery('setSoftId', $selectedId);
         break;
 
     case 'setSoftName':
-        //echo 'softName ' . $_GET['softName'];
         $enteredName = $DB->escape($_GET['softName']);
         echo generateQuery('setSoftName', $enteredName);
         break;
