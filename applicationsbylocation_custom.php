@@ -1,3 +1,10 @@
+<script
+  src="https://code.jquery.com/jquery-1.12.4.js"
+  integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+  crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+
 <?php
 /**
  * @version $Id: applicationsbylocation.php 366 2018-09-13 09:24:43Z yllen $
@@ -44,9 +51,8 @@ include ("../../../../inc/includes.php");
 
 $dbu = new DbUtils();
 
-//TRANS: The name of the report = Applications by locations and versions
 $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_custom', 'reports'));
-
+/*
 $softwareName = new PluginReportsTextCriteria($report, '`s`.`name`', 'SoftwareName');
 
 
@@ -72,8 +78,84 @@ if ($report->criteriasValidated()) {
 
    $report->execute();
 }
+*/
+?>
+
+<select class = "names-select2" name="selected[]" ></select>
+<input type = "button" id = "findByName" value = "Задать имя для поиска">
+<script>
+
+$(".names-select2").select2({
+    minimumInputLength: 1,
+    allowClear: true,
+    placeholder: "—",
+    language: 'ru',
+    width: '50%',
+    ajax: {
+       url: "ajax-test-source.php", // адрес бэкэн-обработчика (url)
+       delay: 250,
+       type: "GET",
+       dataType: "json",
+       cache: true,
+       // что будем отправлять на сервер в запросе
+       data: function (obj) {
+           //console.log(obj.term);
+          window.inputtedData = obj.term;
+          //console.log(inputtedData);
+           /* obj.term --то что ввёл пользователь, 
+            * но вы можете и обработать это ввод пред тем 
+            * как отправлять на сервер, 
+            * может добавитьдоп. парамерты */
+ 
+           return {
+                    'action'       : 'getNamesForSelect',
+                    'selectedName' : obj.term
+                    };
+       },
+
+       processResults: function (data, params) { 
+           //console.log(data);
+
+        return data;
+       }
+    }
+});
+
+$(".names-select2").on("change", function(){
+     window.selectedSoftId = $(".names-select2").select2('val');
+     //console.log($('.names-select2 :selected').text());
+     $.ajax({
+          url: "ajax-test-source.php",
+          type: "GET",
+          dataType: "json",
+          data:{
+               'action'  : 'setSoftId',
+               'id'      : window.selectedSoftId
+          }
+     });
+     
+
+})
+
+$("#findByName").on("click", function() {
+     console.log(window.inputtedData);
+     $.ajax({
+          url: "ajax-test-source.php",
+          type: "GET",
+          dataType: "json",
+          data:{
+               'action'  : 'setSoftName',
+               'softName': window.inputtedData
+          }
+     });
+});
 
 
+
+
+
+
+</script>
 
 
 
