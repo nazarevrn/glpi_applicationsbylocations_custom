@@ -2,8 +2,16 @@
 
 include ("../../../../inc/includes.php");
 
-function setFilterParams($param, $value) {
+function generateQuery($param, $value) {
 
+    $sqlParams = "
+            SELECT
+                sv.id as versionId
+            FROM 
+                glpi_softwares s
+            INNER JOIN
+                glpi_softwareversions sv ON sv.softwares_id = s.id
+            WHERE ";
     switch ($param) {
         case 'setSoftId' :
             $sqlWhere = "s.id = $value";
@@ -11,6 +19,9 @@ function setFilterParams($param, $value) {
         case 'setSoftName' :
             $sqlWhere = "s.name LIKE '%" . $value . "%'";
             break;
+        case 'setVersionId' :
+            $sqlParams = "";
+            $sqlWhere = $value;
     }
     //$sqlWhere = "s.name LIKE '%" . $enteredName . "%'";
 
@@ -40,13 +51,7 @@ function setFilterParams($param, $value) {
         ON
             pc_ver_2.computers_id = pc.id AND pc_ver_2.softwareversions_id IN 
             (
-                SELECT
-                    sv.id as versionId
-                FROM 
-                    glpi_softwares s
-                INNER JOIN
-                    glpi_softwareversions sv ON sv.softwares_id = s.id
-                WHERE $sqlWhere 
+                " . $sqlParams . $sqlWhere . "
             )
                 
         LEFT JOIN
@@ -69,14 +74,8 @@ function setFilterParams($param, $value) {
                     glpi_computers_softwareversions pc_ver
                 WHERE
                     pc_ver.softwareversions_id 	IN (
-                        SELECT
-                            sv.id as versionId
-                        FROM 
-                            glpi_softwares s
-                        INNER JOIN
-                            glpi_softwareversions sv ON sv.softwares_id = s.id
-                        WHERE $sqlWhere 
-                        )
+                        " . $sqlParams . $sqlWhere . "
+                    )
                 AND
                 pc_ver.is_deleted_computer != 1)
         GROUP BY
@@ -88,6 +87,7 @@ function setFilterParams($param, $value) {
     
     
     ";
+
     $json = [
                 'sql' => $sql
 
@@ -116,18 +116,40 @@ switch ($_GET['action']) {
         echo json_encode($json);
         break;
     case 'getVersionsForSelect' :
+        //getVersionsForSelect
+        $selectedId = $DB->escape($_GET['selectedSoftId']);
+        //$versionId = $DB->escape($_GET['selectedVersion']);
         
+        $result = $DB->query("SELECT `id`, `name` FROM glpi_softwareversions WHERE softwares_id = $selectedId");
+
+        while ($data = $DB->fetch_assoc($result)) {
+            // print '<pre>';
+            // print_r($data['id']);
+            // print_r($data['name']);
+            // print '</pre>';
+            $json['results'][] = [
+                'text' => $data['name'],
+                'id'    => $data['id']
+            ];
+        
+        }
+        echo json_encode($json);
         break;
     case 'setSoftId' :
         //echo 'softid ' . $_GET['id'];
         $selectedId = $DB->escape($_GET['id']);
-        echo setFilterParams('setSoftId', $selectedId);
+        echo generateQuery('setSoftId', $selectedId);
         break;
 
     case 'setSoftName':
         //echo 'softName ' . $_GET['softName'];
         $enteredName = $DB->escape($_GET['softName']);
-        echo setFilterParams('setSoftName', $enteredName);
+        echo generateQuery('setSoftName', $enteredName);
+        break;
+
+    case 'setVersionId':
+        $selectedVersionId = $DB->escape($_GET['versionId']);
+        echo generateQuery('setVersionId', $selectedVersionId);
         break;
 }
 
