@@ -5,6 +5,11 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
+<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+ 
+<script type="text/javascript" src="DataTables/datatables.min.js"></script>
+
+
 <?php
 /**
  * @version $Id: applicationsbylocation.php 366 2018-09-13 09:24:43Z yllen $
@@ -52,6 +57,10 @@ include ("../../../../inc/includes.php");
 $dbu = new DbUtils();
 
 $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_custom', 'reports'));
+
+Html::header(__('histoinst_report_title', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
+
+Report::title();
 /*
 $softwareName = new PluginReportsTextCriteria($report, '`s`.`name`', 'SoftwareName');
 
@@ -80,47 +89,64 @@ if ($report->criteriasValidated()) {
 }
 */
 ?>
-
+<span>
 <select class = "names-select2" name="selected[]" ></select>
-<input type = "button" id = "findByName" value = "Задать имя для поиска">
+<input type = "button" id = "findByName" value = "Задать имя для поиска" style="width: 10%">
+<!-- <select class = "locations-select2" ></select> -->
+</span>
 <div id = "versionsGroup">
      <p>Укажите версию</p>
      <select id = "versions-select2" ></select>
 </div>
+<div id = "findButtonDiv">
+     <input type = "button" id = "findButton" value = "Поиск" style = "display: none">
+</div>
+
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Office</th>
+            <th>Salary</th>
+        </tr>
+    </thead>
+    <tbody>
+          <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+          </tr>
+    </tbody>
+</table>
+
 <script>
 
 $("#versionsGroup").hide();
 
+// $("#findButton").hide();
+
 $(".names-select2").select2({
     minimumInputLength: 1,
     allowClear: true,
-    placeholder: "—",
+    placeholder: "Имя ПО",
     language: 'ru',
-    width: '50%',
+    width: '40%',
     ajax: {
-       url: "ajax-test-source.php", // адрес бэкэн-обработчика (url)
+       url: "ajax-test-source.php",
        delay: 250,
        type: "GET",
        dataType: "json",
        cache: true,
-       // что будем отправлять на сервер в запросе
        data: function (obj) {
-           //console.log(obj.term);
-          window.inputtedData = obj.term;
-          //console.log(inputtedData);
-           /* obj.term --то что ввёл пользователь, 
-            * но вы можете и обработать это ввод пред тем 
-            * как отправлять на сервер, 
-            * может добавитьдоп. парамерты */
- 
+          window.inputtedData = obj.term; 
            return {
                     'action'       : 'getNamesForSelect',
                     'selectedName' : obj.term
                     };
        },
-
        processResults: function (data, params) { 
-           //console.log(data);
 
         return data;
        }
@@ -129,48 +155,86 @@ $(".names-select2").select2({
 
 $(".names-select2").on("change", function(){
      window.selectedSoftId = $(".names-select2").select2('val');
-     //console.log($('.names-select2 :selected').text());
      $.ajax({
           url: "ajax-test-source.php",
           type: "GET",
           dataType: "json",
           data:{
-               'action'  : 'setSoftId',
-               'id'      : window.selectedSoftId
+               'action'              : 'setSoftId',
+               'selectedSoftId'      : window.selectedSoftId
           },
           success: function (data) {
-               //console.log(data);
                window.generatedSQL = data.sql;
           }
      });
 
      $("#versionsGroup").show();
+     $("#findButton").show();
 
 
 });
 
+
+// $(".locations-select2").select2({
+//     minimumInputLength: 1,
+//     allowClear: true,
+//     placeholder: "Местоположение",
+//     language: 'ru',
+//     width: '40%',
+//     ajax: {
+//        url: "ajax-test-source.php",
+//        delay: 250,
+//        type: "GET",
+//        dataType: "json",
+//        cache: true,
+//        data: function (obj) {
+//           //window.inputtedData = obj.term; 
+//            return {
+//                     'action'       : 'getLocationsForSelect',
+//                     'selectedLocationId' : obj.term
+//                     };
+//        },
+//        processResults: function (data, params) { 
+
+//         return data;
+//        }
+//     }
+// });
+
+// $(".locations-select2").on("change", function(){
+//      window.selectedLocationId = $(".locations-select2").select2('val');
+//      $.ajax({
+//           url: "ajax-test-source.php",
+//           type: "GET",
+//           dataType: "json",
+//           data:{
+//                'action'  : 'setSoftId',
+//                'id'      : window.selectedSoftId
+//           },
+//           success: function (data) {
+//                window.generatedSQL = data.sql;
+//           }
+//      });
+
+//      $("#versionsGroup").show();
+
+
+// });
+
 $("#versions-select2").select2({
     //minimumInputLength: 1,
     allowClear: true,
-    placeholder: "—",
+    placeholder: "Версия ПО",
     language: 'ru',
     width: '50%',
     ajax: {
-       url: "ajax-test-source.php", // адрес бэкэн-обработчика (url)
+       url: "ajax-test-source.php",
        delay: 250,
        type: "GET",
        dataType: "json",
        cache: true,
-       // что будем отправлять на сервер в запросе
-       data: function (obj) {
-           //console.log(obj.term);
-          //window.inputtedData = obj.term;
-          //console.log(inputtedData);
-           /* obj.term --то что ввёл пользователь, 
-            * но вы можете и обработать это ввод пред тем 
-            * как отправлять на сервер, 
-            * может добавитьдоп. парамерты */
- 
+
+       data: function (obj) { 
            return {
                     'action'            : 'getVersionsForSelect',
                     'selectedSoftId'            : window.selectedSoftId
@@ -180,7 +244,7 @@ $("#versions-select2").select2({
 
           processResults: function (data, params) {
                window.generatedSQL = data.sql;
-           //console.log(data);
+               $("#findButton").show();
                return data;
        }
     }
@@ -188,9 +252,8 @@ $("#versions-select2").select2({
 
 $("#versions-select2").on("change", function(){
      window.selectedVersionId = $("#versions-select2").select2('val');
-     //console.log(window.selectedVersionId);
-     
-     $.ajax({
+     if (window.selectedVersionId !== null) {
+          $.ajax({
           url: "ajax-test-source.php",
           type: "GET",
           dataType: "json",
@@ -199,10 +262,12 @@ $("#versions-select2").on("change", function(){
                'versionId'      : window.selectedVersionId
           },
           success: function (data) {
-               //console.log(data);
                window.generatedSQL = data.sql;
+               $("#findButton").show();
           }
      });
+     }
+
 
 
 
@@ -219,14 +284,58 @@ $("#findByName").on("click", function() {
                'softName': window.inputtedData
           },
           success: function (data) {
-               //console.log(data);
                window.generatedSQL = data.sql;
+               $("#findButton").show();
           }
      });
 });
 
+//findButton
 
-console.log(window.generatedSQL);
+$("#findButton").on("click", function() {
+     console.log(window.generatedSQL);
+     $.ajax({
+          url: "ajax-get-data.php",
+          type: "GET",
+          data :{"sqlQuery":window.generatedSQL}
+          // dataType: "json",
+          // data:{
+
+          //      'sqlQuery': window.generatedSQL
+          // },
+          // success: function (data) {
+          //      window.generatedSQL = data.sql;
+               
+          // }
+     });
+});
+
+var data = [
+    {
+        "name":       "Tiger Nixon",
+        "position":   "System Architect",
+        "salary":     "$3,120",
+        "start_date": "2011/04/25",
+        "office":     "Edinburgh",
+        "extn":       "5421"
+    },
+    {
+        "name":       "Garrett Winters",
+        "position":   "Director",
+        "salary":     "$5,300",
+        "start_date": "2011/07/25",
+        "office":     "Edinburgh",
+        "extn":       "8422"
+    }
+];
+
+function init() {
+  const table = $("#table_id").DataTable();
+//   const tableData = getTableData(table);
+//   createHighcharts(tableData);
+//   setTableEvents(table);
+}
+
 
 
 

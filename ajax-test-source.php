@@ -118,9 +118,14 @@ switch ($_GET['action']) {
         echo json_encode($json);
         break;
 
+    case 'getLocationsForSelect' :
+        $selectedLocationId = $DB->escape($_GET['selectedLocationId']);
+
+        break;    
+
     case 'setSoftId' :
-        $selectedId = $DB->escape($_GET['id']);
-        echo generateQuery('setSoftId', $selectedId);
+        $selectedSoftId = $DB->escape($_GET['selectedSoftId']);
+        echo generateQuery('setSoftId', $selectedSoftId);
         break;
 
     case 'setSoftName':
@@ -133,4 +138,5 @@ switch ($_GET['action']) {
         echo generateQuery('setVersionId', $selectedVersionId);
         break;
 }
+
 
