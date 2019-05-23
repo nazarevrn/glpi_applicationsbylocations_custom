@@ -243,7 +243,6 @@ $("#versions-select2").on("change", function(){
 });
 
 $("#findByName").on("click", function() {
-     console.log(window.inputtedData);
      //$(".names-select2").select2('val') = window.inputtedData;
      $.ajax({
           url: "ajax-test-source.php",
@@ -282,8 +281,11 @@ $("#findButton").on("click", function() {
                },
 
           success: function (data) {
-
+               //table = $("#table_id").dataTable();
+               //table.destroy();
+               
                $("#table_id").dataTable({
+                    destroy: true,
                     data:data,
                     columns: [
                          {data: 'softwareName'},
