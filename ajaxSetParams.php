@@ -101,26 +101,22 @@ $sql = "
 $result = $DB->query($sql);
 
 $linkForSoft = 'http://' . $_SERVER['HTTP_HOST'] . '/front/software.form.php?id=';
-
+$linkForVersion = 'http://' . $_SERVER['HTTP_HOST'] . '/front/softwareversion.form.php?id=';
+$linkForPc = 'http://' . $_SERVER['HTTP_HOST'] . '/front/computer.form.php?id=';
+$linkforUser = 'http://' . $_SERVER['HTTP_HOST'] . '/front/user.form.php?id=';
 
 while ($data = $DB->fetch_assoc($result)) {
 
     $oneRow = [
         'softwareName' => '<a href = "' . $linkForSoft . $data['softwareId'] . '">' . $data['softwareName'] . '</a>',
-        'versionName'  => $data['versionName'],
-        'pcName'       => $data['pcName'],
-        'pcSerial'     => $data['pcSerial'],
+        'versionName'  => '<a href = "' . $linkForVersion . $data['versionId'] . '">' . $data['versionName'] . '</a>',
+        'pcName'       => '<a href = "' . $linkForPc . $data['pcId'] . '">' . $data['pcName'] . '</a>',
+        'pcSerial'     => $data['pcSerial'], 
         'locationName' => $data['locationName'],
-        'userName'     => $data['userName'],
+        'userName'     => '<a href = "' . $linkforUser . $data['userId'] . '">' . $data['userName'] . '</a>',
         'installDate'  => $data['installDate']
     ];
     $json[] = $oneRow; 
 }
 
 echo json_encode($json, JSON_UNESCAPED_SLASHES);
-
-// //http://10.0.0.52/front/software.form.php?id=10861
-// [SCRIPT_NAME] 
-// /plugins/reports/report/applicationsbylocation_custom/ajaxSetParams.php
-
-// $linkForSoft = 'http://' . $_SERVER['HTTP_HOST'] . 'software.form.php?id=';
