@@ -37,6 +37,9 @@ var jQuery_1_12_4 = $.noConflict(true);
  @link      http://www.glpi-project.org/
  @since     2009
  --------------------------------------------------------------------------
+
+ когда я начинал писать этот код, только Бог и я знали, как он работает.
+ теперь не знает никто.
  */
 ini_set("display_errors", true);
 error_reporting(~E_NOTICE);
@@ -116,7 +119,7 @@ $(".names-select2").select2({
     language: 'ru',
     width: '40%',
     ajax: {
-       url: "ajax-test-source.php",
+       url: "ajaxGetDataForSelect.php",
        delay: 250,
        type: "GET",
        dataType: "json",
@@ -137,23 +140,8 @@ $(".names-select2").select2({
 
 $(".names-select2").on("change", function(){
      window.selectedSoftId = $(".names-select2").select2('val');
-     // $.ajax({
-     //      url: "ajax-test-source.php",
-     //      type: "GET",
-     //      dataType: "json",
-     //      data:{
-     //           'action'              : 'setSoftId',
-     //           'selectedSoftId'      : window.selectedSoftId
-     //      },
-     //      success: function (data) {
-     //           window.generatedSQL = data.sql;
-     //      }
-     // });
-
      $("#versionsGroup").show();
      $("#findButton").show();
-
-
 });
 
 
@@ -164,13 +152,12 @@ $(".locations-select2").select2({
     language: 'ru',
     width: '40%',
     ajax: {
-       url: "ajax-test-source.php",
+       url: "ajaxGetDataForSelect.php",
        delay: 250,
        type: "GET",
        dataType: "json",
        cache: true,
        data: function (obj) {
-          //window.inputtedData = obj.term; 
            return {
                     'action'       : 'getLocationsForSelect',
                     'selectedLocationName' : obj.term
@@ -186,18 +173,15 @@ $(".locations-select2").select2({
 $(".locations-select2").on("change", function(){
      window.selectedLocationId = $(".locations-select2").select2('val');
      $("#findButton").show();
-
-
 });
 
 $("#versions-select2").select2({
-    //minimumInputLength: 1,
     allowClear: true,
     placeholder: "Версия ПО",
     language: 'ru',
-    width: '50%',
+    width: '40%',
     ajax: {
-       url: "ajax-test-source.php",
+       url: "ajaxGetDataForSelect.php",
        delay: 250,
        type: "GET",
        dataType: "json",
@@ -207,12 +191,10 @@ $("#versions-select2").select2({
            return {
                     'action'            : 'getVersionsForSelect',
                     'selectedSoftId'            : window.selectedSoftId
-                    //'selectedVersion'   : obj.term
                     };
        },
 
           processResults: function (data, params) {
-               window.generatedSQL = data.sql;
                $("#findButton").show();
                return data;
        }
@@ -221,55 +203,21 @@ $("#versions-select2").select2({
 
 $("#versions-select2").on("change", function(){
      window.selectedVersionId = $("#versions-select2").select2('val');
-     if (window.selectedVersionId !== null) {
-     //      $.ajax({
-     //      url: "ajax-test-source.php",
-     //      type: "GET",
-     //      dataType: "json",
-     //      data:{
-     //           'action'  : 'setVersionId',
-     //           'versionId'      : window.selectedVersionId
-     //      },
-     //      success: function (data) {
-     //           window.generatedSQL = data.sql;
-     //           $("#findButton").show();
-     //      }
-     // });
-     }
      $("#findButton").show();
-
-
-
 });
 
 $("#findByName").on("click", function() {
-     //$(".names-select2").select2('val') = window.inputtedData;
-     $.ajax({
-          url: "ajax-test-source.php",
-          type: "GET",
-          dataType: "json",
-          data:{
-               'action'  : 'setSoftName',
-               'softName': window.inputtedData
-          },
-          success: function (data) {
-               window.generatedSQL = data.sql;
-               $("#findButton").show();
-          }
-     });
+     $("#findButton").show();
 });
 
-//findButton
 
 $("#findButton").on("click", function() {
-     //console.log(window.generatedSQL);
-
      console.log(window.inputtedData);
      console.log(window.selectedSoftId);
      console.log(window.selectedVersionId);
      console.log(window.selectedLocationId);
      $.ajax({
-          url: "ajaxSetParams.php",
+          url: "ajaxGetDataForReport.php",
           type: "GET",
           dataType: "json",
           data :
@@ -280,10 +228,7 @@ $("#findButton").on("click", function() {
                "locationId" : window.selectedLocationId
                },
 
-          success: function (data) {
-               //table = $("#table_id").dataTable();
-               //table.destroy();
-               
+          success: function (data) {               
                $("#table_id").dataTable({
                     destroy: true,
                     data:data,
@@ -302,26 +247,6 @@ $("#findButton").on("click", function() {
           }
      });
 });
-
-
-// var data = [
-//     [
-//         "Tiger Nixon",
-//         "System Architect",
-//         "Edinburgh",
-//         "5421"
-//     ],
-//     [
-//         "Garrett Winters",
-//         "Director",
-//         "Edinburgh",
-//         "8422"
-//     ]
-// ]
-
-
-
-
 
 </script>
 
