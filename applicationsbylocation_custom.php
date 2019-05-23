@@ -41,11 +41,6 @@ var jQuery_1_12_4 = $.noConflict(true);
 ini_set("display_errors", true);
 error_reporting(~E_NOTICE);
 
-// $memcache->connect('localhost', 11211) or die ("Не могу подключиться");
-
-// $version = $memcache->getVersion();
-// echo "Версия сервера: ".$version."<br/>\n";
-
 $USEDBREPLICATE         = 1;
 $DBCONNECTION_REQUIRED  = 0;
 
@@ -99,8 +94,8 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script> 
 
-<!-- 
-<link rel="stylesheet" type="text/css" href="http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/DataTables/datatables.min.css"/>
+
+<!-- <link rel="stylesheet" type="text/css" href="http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/DataTables/datatables.min.css"/>
  
 <script type="text/javascript" src="http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/DataTables/datatables.min.js"></script> -->
 
@@ -246,6 +241,7 @@ $("#versions-select2").on("change", function(){
 
 $("#findByName").on("click", function() {
      console.log(window.inputtedData);
+     //$(".names-select2").select2('val') = window.inputtedData;
      $.ajax({
           url: "ajax-test-source.php",
           type: "GET",

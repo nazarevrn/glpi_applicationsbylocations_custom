@@ -105,9 +105,6 @@ $sql = "
     ORDER BY
         pc.name	
 ";
-print '<pre>';
-print_r($sql);
-print '</pre>';
 
 $result = $DB->query($sql);
 
