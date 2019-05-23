@@ -77,13 +77,16 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
  
  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.js"></script>
 
-<table id="table_id" class="display">
+<table id="table_id" style = "display: none">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Salary</th>
+            <th>Имя ПО</th>
+            <th>Версия ПО</th>
+            <th>Имя ПК</th>
+            <th>Серийный номер ПК</th>
+            <th>Местоположение</th>
+            <th>Пользователь</th>
+            <th>Дата установки</th>
         </tr>
     </thead>
     <tbody>
@@ -279,32 +282,42 @@ $("#findButton").on("click", function() {
                },
 
           success: function (data) {
-               //window.generatedSQL = data.sql;
-               console.log(data);
-               
+
+               $("#table_id").dataTable({
+                    data:data,
+                    columns: [
+                         {data: 'softwareName'},
+                         {data: 'versionName'},
+                         {data: 'pcName'},
+                         {data: 'pcSerial'},
+                         {data: 'locationName'},
+                         {data: 'userName'},
+                         {data: 'installDate'},
+                    ]
+               });
+
+               $("#table_id").show();
           }
      });
 });
 
 
-var data = [
-    [
-        "Tiger Nixon",
-        "System Architect",
-        "Edinburgh",
-        "5421"
-    ],
-    [
-        "Garrett Winters",
-        "Director",
-        "Edinburgh",
-        "8422"
-    ]
-]
+// var data = [
+//     [
+//         "Tiger Nixon",
+//         "System Architect",
+//         "Edinburgh",
+//         "5421"
+//     ],
+//     [
+//         "Garrett Winters",
+//         "Director",
+//         "Edinburgh",
+//         "8422"
+//     ]
+// ]
 
-$("#table_id").dataTable({
-     data:data
-});
+
 
 
 

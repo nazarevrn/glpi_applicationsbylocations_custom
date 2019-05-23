@@ -7,15 +7,6 @@ $softId = $DB->escape($_GET['softId']);
 $versionId = $DB->escape($_GET['versionId']);
 $locationId = $DB->escape($_GET['locationId']);
 
-// if ( isset($softId) ) {
-//     if ( isset($versionId) ) {
-//         if ( isset($locationId) ) {
-//             $sqlLocation = " AND l.id = $locationId";
-//             $sqlVersion = "$versionId";
-//         }
-//     }
-// }
-
 if ( !empty($softName)) {
     $sqlSoft = "
     (
@@ -55,16 +46,17 @@ if ( !empty($locationId) ) {
 
 $sql = "
     SELECT
-        us.id as userId,
-        us.name as userName,
+        soft2.name as softwareName,
+        soft2.id as softwareId,
+        soft_ver.name as versionName,
+        pc_ver_2.softwareversions_id as versionId,
         pc.name as pcName,
         pc.id as pcId,
+        pc.`serial` as pcSerial,
         l.name as locationName,
-        pc_ver_2.softwareversions_id as versionId,
-        pc_ver_2.date_install as installDate,
-        soft_ver.name as versionName,
-        soft2.name as softwareName,
-        pc.`serial` as pcSerial
+        us.name as userName,
+        us.id as userId,
+        pc_ver_2.date_install as installDate
     FROM 
         glpi_computers pc
     INNER JOIN 
@@ -108,10 +100,27 @@ $sql = "
 
 $result = $DB->query($sql);
 
+$linkForSoft = 'http://' . $_SERVER['HTTP_HOST'] . '/front/software.form.php?id=';
+
+
 while ($data = $DB->fetch_assoc($result)) {
-    print '<pre>';
-    print_r($data);
-    print '</pre>';
 
-
+    $oneRow = [
+        'softwareName' => '<a href = "' . $linkForSoft . $data['softwareId'] . '">' . $data['softwareName'] . '</a>',
+        'versionName'  => $data['versionName'],
+        'pcName'       => $data['pcName'],
+        'pcSerial'     => $data['pcSerial'],
+        'locationName' => $data['locationName'],
+        'userName'     => $data['userName'],
+        'installDate'  => $data['installDate']
+    ];
+    $json[] = $oneRow; 
 }
+
+echo json_encode($json, JSON_UNESCAPED_SLASHES);
+
+// //http://10.0.0.52/front/software.form.php?id=10861
+// [SCRIPT_NAME] 
+// /plugins/reports/report/applicationsbylocation_custom/ajaxSetParams.php
+
+// $linkForSoft = 'http://' . $_SERVER['HTTP_HOST'] . 'software.form.php?id=';
