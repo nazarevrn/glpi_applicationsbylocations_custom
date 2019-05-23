@@ -119,8 +119,18 @@ switch ($_GET['action']) {
         break;
 
     case 'getLocationsForSelect' :
-        $selectedLocationId = $DB->escape($_GET['selectedLocationId']);
+        $selectedLocationName = $DB->escape($_GET['selectedLocationName']);
+        $sql = "SELECT `id`, `name` FROM glpi_locations WHERE `name` LIKE '%" . $selectedLocationName . "%'";
+        $result = $DB->query($sql);
+        while ($data = $DB->fetch_assoc($result)) {
 
+            $json['results'][] = [
+                'text' => $data['name'],
+                'id'    => $data['id']
+            ];
+        
+        }
+        echo json_encode($json);
         break;    
 
     case 'setSoftId' :

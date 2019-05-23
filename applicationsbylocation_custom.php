@@ -1,13 +1,10 @@
-<script
+ <!-- <script
   src="https://code.jquery.com/jquery-1.12.4.js"
   integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
-  crossorigin="anonymous"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-
-<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
- 
-<script type="text/javascript" src="DataTables/datatables.min.js"></script>
+  crossorigin="anonymous"></script> -->
+ <!-- <script type="text/javascript">
+var jQuery_1_12_4 = $.noConflict(true);
+</script>   -->
 
 
 <?php
@@ -54,45 +51,23 @@ $DBCONNECTION_REQUIRED  = 0;
 
 include ("../../../../inc/includes.php");
 
+Html::header(__('histoinst_report_title', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
+
+Report::title();
+
 $dbu = new DbUtils();
 
 $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_custom', 'reports'));
 
-Html::header(__('histoinst_report_title', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
+// Html::header(__('histoinst_report_title', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
 
-Report::title();
-/*
-$softwareName = new PluginReportsTextCriteria($report, '`s`.`name`', 'SoftwareName');
+// Report::title();
 
-
-$report->displayCriteriasForm();
-
-
-// Form validate and only one software with license
-if ($report->criteriasValidated()) {
-
-
-   //$report->setSubNameAuto();
-   $inputtedName = mysql_real_escape_string ($softwareName->getParameterValue());
-
-   $query = '  SELECT
-                    s.name as softName, sv.name as versionName
-               FROM 
-                    glpi_softwares s
-               LEFT JOIN glpi_softwareversions sv ON s.id = sv.softwares_id 
-               WHERE s.name = \'' .  $inputtedName . '\'';
-
-
-   $report->setSqlRequest($query);
-
-   $report->execute();
-}
-*/
 ?>
 <span>
 <select class = "names-select2" name="selected[]" ></select>
 <input type = "button" id = "findByName" value = "Задать имя для поиска" style="width: 10%">
-<!-- <select class = "locations-select2" ></select> -->
+<select class = "locations-select2" ></select>
 </span>
 <div id = "versionsGroup">
      <p>Укажите версию</p>
@@ -101,6 +76,11 @@ if ($report->criteriasValidated()) {
 <div id = "findButtonDiv">
      <input type = "button" id = "findButton" value = "Поиск" style = "display: none">
 </div>
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.css"/>
+ 
+ <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.js"></script>
 
 <table id="table_id" class="display">
     <thead>
@@ -112,14 +92,18 @@ if ($report->criteriasValidated()) {
         </tr>
     </thead>
     <tbody>
-          <tr>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>4</td>
-          </tr>
+
     </tbody>
 </table>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script> 
+
+<!-- 
+<link rel="stylesheet" type="text/css" href="http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/DataTables/datatables.min.css"/>
+ 
+<script type="text/javascript" src="http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/DataTables/datatables.min.js"></script> -->
+
 
 <script>
 
@@ -155,18 +139,18 @@ $(".names-select2").select2({
 
 $(".names-select2").on("change", function(){
      window.selectedSoftId = $(".names-select2").select2('val');
-     $.ajax({
-          url: "ajax-test-source.php",
-          type: "GET",
-          dataType: "json",
-          data:{
-               'action'              : 'setSoftId',
-               'selectedSoftId'      : window.selectedSoftId
-          },
-          success: function (data) {
-               window.generatedSQL = data.sql;
-          }
-     });
+     // $.ajax({
+     //      url: "ajax-test-source.php",
+     //      type: "GET",
+     //      dataType: "json",
+     //      data:{
+     //           'action'              : 'setSoftId',
+     //           'selectedSoftId'      : window.selectedSoftId
+     //      },
+     //      success: function (data) {
+     //           window.generatedSQL = data.sql;
+     //      }
+     // });
 
      $("#versionsGroup").show();
      $("#findButton").show();
@@ -175,51 +159,38 @@ $(".names-select2").on("change", function(){
 });
 
 
-// $(".locations-select2").select2({
-//     minimumInputLength: 1,
-//     allowClear: true,
-//     placeholder: "Местоположение",
-//     language: 'ru',
-//     width: '40%',
-//     ajax: {
-//        url: "ajax-test-source.php",
-//        delay: 250,
-//        type: "GET",
-//        dataType: "json",
-//        cache: true,
-//        data: function (obj) {
-//           //window.inputtedData = obj.term; 
-//            return {
-//                     'action'       : 'getLocationsForSelect',
-//                     'selectedLocationId' : obj.term
-//                     };
-//        },
-//        processResults: function (data, params) { 
+$(".locations-select2").select2({
+    minimumInputLength: 1,
+    allowClear: true,
+    placeholder: "Местоположение",
+    language: 'ru',
+    width: '40%',
+    ajax: {
+       url: "ajax-test-source.php",
+       delay: 250,
+       type: "GET",
+       dataType: "json",
+       cache: true,
+       data: function (obj) {
+          //window.inputtedData = obj.term; 
+           return {
+                    'action'       : 'getLocationsForSelect',
+                    'selectedLocationName' : obj.term
+                    };
+       },
+       processResults: function (data, params) { 
 
-//         return data;
-//        }
-//     }
-// });
+        return data;
+       }
+    }
+});
 
-// $(".locations-select2").on("change", function(){
-//      window.selectedLocationId = $(".locations-select2").select2('val');
-//      $.ajax({
-//           url: "ajax-test-source.php",
-//           type: "GET",
-//           dataType: "json",
-//           data:{
-//                'action'  : 'setSoftId',
-//                'id'      : window.selectedSoftId
-//           },
-//           success: function (data) {
-//                window.generatedSQL = data.sql;
-//           }
-//      });
-
-//      $("#versionsGroup").show();
+$(".locations-select2").on("change", function(){
+     window.selectedLocationId = $(".locations-select2").select2('val');
+     $("#findButton").show();
 
 
-// });
+});
 
 $("#versions-select2").select2({
     //minimumInputLength: 1,
@@ -253,21 +224,21 @@ $("#versions-select2").select2({
 $("#versions-select2").on("change", function(){
      window.selectedVersionId = $("#versions-select2").select2('val');
      if (window.selectedVersionId !== null) {
-          $.ajax({
-          url: "ajax-test-source.php",
-          type: "GET",
-          dataType: "json",
-          data:{
-               'action'  : 'setVersionId',
-               'versionId'      : window.selectedVersionId
-          },
-          success: function (data) {
-               window.generatedSQL = data.sql;
-               $("#findButton").show();
-          }
-     });
+     //      $.ajax({
+     //      url: "ajax-test-source.php",
+     //      type: "GET",
+     //      dataType: "json",
+     //      data:{
+     //           'action'  : 'setVersionId',
+     //           'versionId'      : window.selectedVersionId
+     //      },
+     //      success: function (data) {
+     //           window.generatedSQL = data.sql;
+     //           $("#findButton").show();
+     //      }
+     // });
      }
-
+     $("#findButton").show();
 
 
 
@@ -293,48 +264,34 @@ $("#findByName").on("click", function() {
 //findButton
 
 $("#findButton").on("click", function() {
-     console.log(window.generatedSQL);
-     $.ajax({
-          url: "ajax-get-data.php",
-          type: "GET",
-          data :{"sqlQuery":window.generatedSQL}
-          // dataType: "json",
-          // data:{
+     //console.log(window.generatedSQL);
 
-          //      'sqlQuery': window.generatedSQL
-          // },
-          // success: function (data) {
-          //      window.generatedSQL = data.sql;
+     console.log(window.inputtedData);
+     console.log(window.selectedSoftId);
+     console.log(window.selectedVersionId);
+     console.log(window.selectedLocationId);
+     $.ajax({
+          url: "ajaxSetParams.php",
+          type: "GET",
+          dataType: "json",
+          data :
+               {
+               "softName"   : window.inputtedData,
+               "softId"     : window.selectedSoftId,
+               "versionId"  : window.selectedVersionId,
+               "locationId" : window.selectedLocationId
+               },
+
+          success: function (data) {
+               //window.generatedSQL = data.sql;
+               console.log(data);
                
-          // }
+          }
      });
 });
 
-var data = [
-    {
-        "name":       "Tiger Nixon",
-        "position":   "System Architect",
-        "salary":     "$3,120",
-        "start_date": "2011/04/25",
-        "office":     "Edinburgh",
-        "extn":       "5421"
-    },
-    {
-        "name":       "Garrett Winters",
-        "position":   "Director",
-        "salary":     "$5,300",
-        "start_date": "2011/07/25",
-        "office":     "Edinburgh",
-        "extn":       "8422"
-    }
-];
 
-function init() {
-  const table = $("#table_id").DataTable();
-//   const tableData = getTableData(table);
-//   createHighcharts(tableData);
-//   setTableEvents(table);
-}
+
 
 
 
