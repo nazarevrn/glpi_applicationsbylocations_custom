@@ -95,9 +95,9 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script> 
 
 
-<!-- <link rel="stylesheet" type="text/css" href="http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/DataTables/datatables.min.css"/>
+<link rel="stylesheet" type="text/css" href="dt/jquery.dataTables.min.css"/>
  
-<script type="text/javascript" src="http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/DataTables/datatables.min.js"></script> -->
+<script type="text/javascript" src="dt/jquery.dataTables.js"></script>
 
 
 <script>
@@ -287,8 +287,24 @@ $("#findButton").on("click", function() {
 });
 
 
+var data = [
+    [
+        "Tiger Nixon",
+        "System Architect",
+        "Edinburgh",
+        "5421"
+    ],
+    [
+        "Garrett Winters",
+        "Director",
+        "Edinburgh",
+        "8422"
+    ]
+]
 
-
+$("#table_id").dataTable({
+     data:data
+});
 
 
 
