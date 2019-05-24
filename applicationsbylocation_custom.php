@@ -67,6 +67,10 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 <input type = "button" id = "findByName" value = "Задать имя для поиска" style="width: 10%">
 <select class = "locations-select2" ></select>
 </span>
+<br>
+<span>
+<input type = "button" id = "#show-export" value = "Показать варианты экспорта" style="width: 10%; display: none;">
+</span>
 <div id = "versionsGroup">
      <p>Укажите версию</p>
      <select id = "versions-select2" ></select>
@@ -76,9 +80,9 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 </div>
 
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.css"/>
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.css"/>
  
- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.js"></script>
+ <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.js"></script> -->
 
 <table id="table_id" style = "display: none">
     <thead>
@@ -101,9 +105,13 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script> 
 
 
-<link rel="stylesheet" type="text/css" href="dt/jquery.dataTables.min.css"/>
+
+<!-- <link rel="stylesheet" type="text/css" href="s2/select2.min.css"/>
+<script type="text/javascript" src="s2/select2.min.js"></script>  -->
+
+<!-- <link rel="stylesheet" type="text/css" href="dt/jquery.dataTables.min.css"/>
  
-<script type="text/javascript" src="dt/jquery.dataTables.js"></script>
+<script type="text/javascript" src="dt/jquery.dataTables.js"></script> -->
 
 
 <script>
@@ -113,36 +121,45 @@ $("#versionsGroup").hide();
 // $("#findButton").hide();
 
 $(".names-select2").select2({
-    minimumInputLength: 1,
-    allowClear: true,
-    placeholder: "Имя ПО",
-    language: 'ru',
-    width: '40%',
-    ajax: {
-       url: "ajaxGetDataForSelect.php",
-       delay: 250,
-       type: "GET",
-       dataType: "json",
-       cache: true,
-       data: function (obj) {
-          window.inputtedData = obj.term; 
-           return {
-                    'action'       : 'getNamesForSelect',
-                    'selectedName' : obj.term
-                    };
-       },
-       processResults: function (data, params) { 
+     tags: true,
+     minimumInputLength: 1,
+     allowClear: true,
+     placeholder: "Имя ПО",
+     language: 'ru',
+     width: '40%',
+     ajax: {
+          url: "ajaxGetDataForSelect.php",
+          delay: 250,
+          type: "GET",
+          dataType: "json",
+          cache: true,
+          data: function (obj) {
+               window.inputtedData = obj.term; 
+               return {
+                         'action'       : 'getNamesForSelect',
+                         'selectedName' : obj.term
+                         };
+          },
+          processResults: function (data, params) { 
 
-        return data;
-       }
-    }
+          return data;
+          }
+     }
+
+
 });
+
 
 $(".names-select2").on("change", function(){
+
      window.selectedSoftId = $(".names-select2").select2('val');
+
      $("#versionsGroup").show();
      $("#findButton").show();
+
 });
+
+
 
 
 $(".locations-select2").select2({
@@ -201,6 +218,7 @@ $("#versions-select2").select2({
     }
 });
 
+
 $("#versions-select2").on("change", function(){
      window.selectedVersionId = $("#versions-select2").select2('val');
      $("#findButton").show();
@@ -210,12 +228,52 @@ $("#findByName").on("click", function() {
      $("#findButton").show();
 });
 
+</script>
+
+<script>
+     // https://stackoverflow.com/questions/10915263/include-two-versions-of-jquery-on-a-page-without-affecting-old-plugins
+    // Save original jQuery version to another variable
+    var $Original = jQuery.noConflict(true);
+</script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/b-1.5.6/datatables.css"/>
+ 
+<!-- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/b-1.5.6/datatables.js"></script> -->
+
+
+<script>
+    // Save new jQuery version to another variable
+    var $v3_3_1 = jQuery.noConflict(true);
+
+    // Replace the original jquery version on $ and jQuery so pre-existing scripts don't break
+    // No need to declare "var" here since the $ and jQuery still exist as "undefined"
+    $ = $Original;
+    jQuery = $Original;
+
+    // Optional: Here I'm saving new jQuery version as a method of "$" -- it keeps it more organized (in my opinion)
+    //$.v1_11_0 = $v1_11_0;
+
+
+
 
 $("#findButton").on("click", function() {
      console.log(window.inputtedData);
      console.log(window.selectedSoftId);
      console.log(window.selectedVersionId);
      console.log(window.selectedLocationId);
+     $("#table_id").show();
      $.ajax({
           url: "ajaxGetDataForReport.php",
           type: "GET",
@@ -229,8 +287,12 @@ $("#findButton").on("click", function() {
                },
 
           success: function (data) {               
-               $("#table_id").dataTable({
+               $v3_3_1("#table_id").dataTable({
                     destroy: true,
+                    dom: 'Bfrtip',
+                    buttons: [
+                              'copy', 'csv', 'excel', 'pdf'
+                              ],
                     data:data,
                     columns: [
                          {data: 'softwareName'},
@@ -243,10 +305,12 @@ $("#findButton").on("click", function() {
                     ]
                });
 
-               $("#table_id").show();
+
+               
           }
      });
 });
+
 
 </script>
 

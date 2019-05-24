@@ -109,12 +109,12 @@ $linkforUser    =   'http://' . $_SERVER['HTTP_HOST'] . '/front/user.form.php?id
 while ($data = $DB->fetch_assoc($result)) {
 
     $oneRow = [
-        'softwareName' => '<a href = "' . $linkForSoft . $data['softwareId'] . '">' . $data['softwareName'] . '</a>',
-        'versionName'  => '<a href = "' . $linkForVersion . $data['versionId'] . '">' . $data['versionName'] . '</a>',
-        'pcName'       => '<a href = "' . $linkForPc . $data['pcId'] . '">' . $data['pcName'] . '</a>',
+        'softwareName' => '<a href = "' . $linkForSoft . $data['softwareId'] . '" target="_blank">' . $data['softwareName'] . '</a>',
+        'versionName'  => '<a href = "' . $linkForVersion . $data['versionId'] . '" target="_blank">' . $data['versionName'] . '</a>',
+        'pcName'       => '<a href = "' . $linkForPc . $data['pcId'] . '" target="_blank">' . $data['pcName'] . '</a>',
         'pcSerial'     => $data['pcSerial'], 
         'locationName' => $data['locationName'],
-        'userName'     => '<a href = "' . $linkforUser . $data['userId'] . '">' . $data['userName'] . '</a>',
+        'userName'     => '<a href = "' . $linkforUser . $data['userId'] . '" target="_blank">' . $data['userName'] . '</a>',
         'installDate'  => $data['installDate']
     ];
     $json[] = $oneRow; 
