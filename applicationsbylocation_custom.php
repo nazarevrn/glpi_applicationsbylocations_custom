@@ -83,12 +83,10 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 <br>
 <br>
 <div>
-     <img id = "loading" src="images/loading.gif" width="200" height="200" style = "display: none">
+     <p style = "text-align: center">
+          <img id = "loading" src="images/loading.gif" width="200" height="200" style = "display: none">
+     </p>
 </div>
-
-<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.css"/>
- 
- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.js"></script> -->
 
 <table id="table_id" style = "display: none">
     <thead>
@@ -109,16 +107,6 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script> 
-
-
-
-<!-- <link rel="stylesheet" type="text/css" href="s2/select2.min.css"/>
-<script type="text/javascript" src="s2/select2.min.js"></script>  -->
-
-<!-- <link rel="stylesheet" type="text/css" href="dt/jquery.dataTables.min.css"/>
- 
-<script type="text/javascript" src="dt/jquery.dataTables.js"></script> -->
-
 
 <script>
 
@@ -256,9 +244,6 @@ $("#findByName").on("click", function() {
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/b-1.5.6/datatables.css"/>
  
-<!-- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/b-1.5.6/datatables.js"></script> -->
-
-
 <script>
     // Save new jQuery version to another variable
     var $v3_3_1 = jQuery.noConflict(true);
@@ -279,7 +264,7 @@ $("#findButton").on("click", function() {
      // console.log(window.selectedSoftId);
      // console.log(window.selectedVersionId);
      // console.log(window.selectedLocationId);
-     $("#table_id").show();
+     
      $.ajax({
           url: "ajaxGetDataForReport.php",
           type: "GET",
@@ -292,13 +277,18 @@ $("#findButton").on("click", function() {
                "locationId" : window.selectedLocationId
                },
           beforeSend: function() {
+               $("#table_id").hide();
                $('#loading').show();
           },
           success: function (data) {  
-               $('#loading').hide();             
+               $('#loading').hide();
+               $("#table_id").show();             
                $v3_3_1("#table_id").dataTable({
                     destroy: true,
-                    dom: 'Bfrtip',
+                    lengthMenu: [ 25, 50, 75, 100 ],
+                    select: true,
+                    //dom: 'Bfrtip',
+                    dom: 'lfBrtip',
                     buttons: [
                               'copy', 'csv', 'excel', 'pdf'
                               ],
