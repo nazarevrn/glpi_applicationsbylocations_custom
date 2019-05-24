@@ -79,6 +79,12 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
      <input type = "button" id = "findButton" value = "Поиск" style = "display: none">
 </div>
 
+<br>
+<br>
+<br>
+<div>
+     <img id = "loading" src="images/loading.gif" width="200" height="200" style = "display: none">
+</div>
 
 <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jqc-1.12.4/datatables.min.css"/>
  
@@ -160,8 +166,6 @@ $(".names-select2").on("change", function(){
 });
 
 
-
-
 $(".locations-select2").select2({
     minimumInputLength: 1,
     allowClear: true,
@@ -226,6 +230,8 @@ $("#versions-select2").on("change", function(){
 
 $("#findByName").on("click", function() {
      $("#findButton").show();
+     window.inputtedData = $(".names-select2").select2('val');
+     //тут дополнительные условия поиска
 });
 
 </script>
@@ -269,10 +275,10 @@ $("#findByName").on("click", function() {
 
 
 $("#findButton").on("click", function() {
-     console.log(window.inputtedData);
-     console.log(window.selectedSoftId);
-     console.log(window.selectedVersionId);
-     console.log(window.selectedLocationId);
+     // console.log(window.inputtedData);
+     // console.log(window.selectedSoftId);
+     // console.log(window.selectedVersionId);
+     // console.log(window.selectedLocationId);
      $("#table_id").show();
      $.ajax({
           url: "ajaxGetDataForReport.php",
@@ -285,8 +291,11 @@ $("#findButton").on("click", function() {
                "versionId"  : window.selectedVersionId,
                "locationId" : window.selectedLocationId
                },
-
-          success: function (data) {               
+          beforeSend: function() {
+               $('#loading').show();
+          },
+          success: function (data) {  
+               $('#loading').hide();             
                $v3_3_1("#table_id").dataTable({
                     destroy: true,
                     dom: 'Bfrtip',
