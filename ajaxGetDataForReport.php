@@ -7,6 +7,11 @@ $softId = $DB->escape($_GET['softId']);
 $versionId = $DB->escape($_GET['versionId']);
 $locationId = $DB->escape($_GET['locationId']);
 
+print '<pre>';
+print_r($_GET);
+print '</pre>';
+die;
+
 if ( !empty($softName)) {
     $sqlSoft = "
     (
@@ -98,6 +103,7 @@ $sql = "
     ORDER BY
         pc.name	
 ";
+//print_r($sql);
 
 $result = $DB->query($sql);
 

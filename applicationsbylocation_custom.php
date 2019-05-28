@@ -67,10 +67,16 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 <input type = "button" id = "findByName" value = "Задать имя для поиска" style="width: 10%">
 <select class = "locations-select2" ></select>
 </span>
-<br>
+<!-- <br>
 <span>
 <input type = "button" id = "#show-export" value = "Показать варианты экспорта" style="width: 10%; display: none;">
-</span>
+</span> -->
+
+<div id = "moreConditionsGroup" style = "display: none">
+     <input type = "button" id = "addCondition" value = "добавить условие" style="width: 10%">
+     <form id = "moreConditionsForm">
+     </form>
+</div>
 <div id = "versionsGroup">
      <p>Укажите версию</p>
      <select id = "versions-select2" ></select>
@@ -220,7 +226,21 @@ $("#findByName").on("click", function() {
      $("#findButton").show();
      window.inputtedData = $(".names-select2").select2('val');
      //тут дополнительные условия поиска
+     $('#moreConditionsGroup').show();
 });
+
+function addCondition (number) {
+     return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = conditionText' + number + '>';
+}
+$('#addCondition').on('click', function () {
+     //let condition = '<span><select><option>Содержит</option><option>Не содержит</option></select><input type = "text"></span>';
+     if (!window.addConditionNumber) {
+          window.addConditionNumber = 0;
+     }
+     $('#moreConditionsForm').append(addCondition(++window.addConditionNumber));
+     //window.addConditionNumber++;
+});
+
 
 </script>
 
@@ -264,17 +284,39 @@ $("#findButton").on("click", function() {
      // console.log(window.selectedSoftId);
      // console.log(window.selectedVersionId);
      // console.log(window.selectedLocationId);
-     
+     /*
+     if (window.inputtedData) {
+          if (window.addConditionNumber) {
+               conditionsTypes = $('[id ^= selectCondition]');
+               //console.log(a);
+               conditionsText = $('[id ^= conditionText]');
+               //console.log(b);
+               //window.conditionsArray = new Map();
+               window.conditionsArray = [];
+               for ( let i = 0; i < conditionsTypes.length; i++) {
+                    //сопоставляем условия {"IN" => "123", "NOT IN" => "321"}
+                    window.conditionsArray[$('#' + conditionsTypes[i].id).val()] = $('#' + conditionsText[i].id).val();
+               }
+          }
+     }
+     */
+    let moreConditions = '';
+     if (window.addConditionNumber) {   //если были заданы дополнительные условия
+          moreConditions = $('#moreConditionsForm').serialize();
+     }
+
+
      $.ajax({
           url: "ajaxGetDataForReport.php",
           type: "GET",
           dataType: "json",
           data :
                {
-               "softName"   : window.inputtedData,
-               "softId"     : window.selectedSoftId,
-               "versionId"  : window.selectedVersionId,
-               "locationId" : window.selectedLocationId
+               "softName"        : window.inputtedData,
+               "softId"          : window.selectedSoftId,
+               "versionId"       : window.selectedVersionId,
+               "locationId"      : window.selectedLocationIdprint,
+               "moreConditions"  : moreConditions
                },
           beforeSend: function() {
                $("#table_id").hide();
@@ -302,10 +344,7 @@ $("#findButton").on("click", function() {
                          {data: 'userName'},
                          {data: 'installDate'},
                     ]
-               });
-
-
-               
+               });               
           }
      });
 });
