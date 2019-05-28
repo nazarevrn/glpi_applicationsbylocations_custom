@@ -1,12 +1,3 @@
- <!-- <script
-  src="https://code.jquery.com/jquery-1.12.4.js"
-  integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
-  crossorigin="anonymous"></script> -->
- <!-- <script type="text/javascript">
-var jQuery_1_12_4 = $.noConflict(true);
-</script>   -->
-
-
 <?php
 /**
  * @version $Id: applicationsbylocation.php 366 2018-09-13 09:24:43Z yllen $
@@ -290,7 +281,6 @@ $('#deleteCondition').on('click', function(){
     // Optional: Here I'm saving new jQuery version as a method of "$" -- it keeps it more organized (in my opinion)
     //$.v1_11_0 = $v1_11_0;
 
-
 function addToData(data,params) {
      for (const key in params) {
           data.push({
@@ -372,8 +362,45 @@ $("#clearButton").on("click", function() {
      $("#versionsGroup").hide();
 
 });
+//
+function getQueryParams(qs) {
+    qs = qs.split("+").join(" ");
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
 
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])]
+            = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
+}
+
+var $_GET = getQueryParams(document.location.search);
+
+//Всё, что ниже нужно для того, что бы отчёт формировался при переходе по ссылке
+if ($_GET.softName) { 
+     window.inputtedData = $_GET.softName; //проверка ввода есть на бэке
+}
+
+if ($_GET.softId) { 
+     window.selectedSoftId = $_GET.softId;
+}
+
+if ($_GET.versionId) { 
+     window.selectedVersionId = $_GET.versionId;
+}
+
+if ($_GET.locationId) { 
+     window.selectedLocationId = $_GET.locationId;
+}
+
+if ($_GET.softName || $_GET.softId || $_GET.versionId || $_GET.locationId) {
+     $('#findButton').trigger('click');
+}
 </script>
+
 
 
 
