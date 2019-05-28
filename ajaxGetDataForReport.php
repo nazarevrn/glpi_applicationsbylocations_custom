@@ -1,7 +1,10 @@
 <?php
 
 include ("../../../../inc/includes.php");
-
+// print '<pre>';
+// print_r($_GET);
+// print '</pre>';
+// die;
 $softName = $DB->escape($_GET['softName']);
 $softId = $DB->escape($_GET['softId']);
 $versionId = $DB->escape($_GET['versionId']);

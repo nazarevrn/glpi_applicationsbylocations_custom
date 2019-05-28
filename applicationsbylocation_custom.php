@@ -363,42 +363,64 @@ $("#clearButton").on("click", function() {
 
 });
 //
-function getQueryParams(qs) {
-    qs = qs.split("+").join(" ");
-    var params = {},
-        tokens,
-        re = /[?&]?([^=]+)=([^&]*)/g;
 
-    while (tokens = re.exec(qs)) {
-        params[decodeURIComponent(tokens[1])]
-            = decodeURIComponent(tokens[2]);
-    }
 
-    return params;
-}
+     function getQueryParams(qs) {
+          qs = qs.split("+").join(" ");
+          var params = {},
+               tokens,
+               re = /[?&]?([^=]+)=([^&]*)/g;
 
-var $_GET = getQueryParams(document.location.search);
+          while (tokens = re.exec(qs)) {
+               params[decodeURIComponent(tokens[1])]
+                    = decodeURIComponent(tokens[2]);
+          }
 
-//Всё, что ниже нужно для того, что бы отчёт формировался при переходе по ссылке
-if ($_GET.softName) { 
-     window.inputtedData = $_GET.softName; //проверка ввода есть на бэке
-}
+     return params;
+     }
 
-if ($_GET.softId) { 
-     window.selectedSoftId = $_GET.softId;
-}
+     var $_GET = getQueryParams(document.location.search);
 
-if ($_GET.versionId) { 
-     window.selectedVersionId = $_GET.versionId;
-}
+     //Всё, что ниже нужно для того, что бы отчёт формировался при переходе по ссылке
+     if ($_GET.softName) { 
+          window.inputtedData = $_GET.softName; //проверка ввода есть на бэке
+     }
 
-if ($_GET.locationId) { 
-     window.selectedLocationId = $_GET.locationId;
-}
+     if ($_GET.softId) { 
+          window.selectedSoftId = $_GET.softId;
+     }
 
-if ($_GET.softName || $_GET.softId || $_GET.versionId || $_GET.locationId) {
-     $('#findButton').trigger('click');
-}
+     if ($_GET.versionId) { 
+          window.selectedVersionId = $_GET.versionId;
+     }
+
+     if ($_GET.locationId) { 
+          window.selectedLocationId = $_GET.locationId;
+     }
+
+     if ($_GET.selectCondition1) {//заданы дополнительные условия для softName (будь они неладны)
+          for (let condition in $_GET) {
+               // condition
+               // selectCondition1
+               let attributeName = condition;
+               let attributeText = $_GET[condition];
+               
+
+               if (attributeName.indexOf('selectCondition') != -1) {
+                    console.log(attributeName, attributeText);
+               }
+
+          }
+     }
+
+     if ($_GET.softName || $_GET.softId || $_GET.versionId || $_GET.locationId) {
+          $('#findButton').trigger('click');
+     }
+
+
+
+
+
 </script>
 
 

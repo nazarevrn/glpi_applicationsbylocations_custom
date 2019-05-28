@@ -529,3 +529,23 @@ GROUP BY
 ORDER BY
 	pc.name	
 
+http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/applicationsbylocation_custom.php?selectCondition1=NOT+IN&selectCondition1Text=Libre&selectCondition2=IN&selectCondition2Text=Update
+
+
+У нас на работе адовый код.
+Современный стэк - это не про нас.
+Расскажу средний такой проект, потому что вариаций масса.
+Берётся PHP 5.3, jQuery v1.10, щедро перемешивается,
+вставляются конструкции вида:
+<?php
+	print '
+          <script>
+		  ...
+		  </script>
+		  ';
+?>
+параметры (абсолютные пути и прочее пишем в базу). 
+Потом это передаётся на поддержку джуну и ставится задача
+найти ошибки. Надо ли говорить, что гемморой это дикий!
+
+http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/applicationsbylocation_custom.php?softName=office&softId=&versionId=&locationId=
