@@ -83,6 +83,7 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 </div>
 <div id = "findButtonDiv">
      <input type = "button" id = "findButton" value = "Поиск" style = "display: none">
+     <input type = "button" id = "clearButton" value = "Очистить" style = "display: none">
 </div>
 
 <br>
@@ -188,6 +189,7 @@ $(".locations-select2").select2({
 $(".locations-select2").on("change", function(){
      window.selectedLocationId = $(".locations-select2").select2('val');
      $("#findButton").show();
+     $("#clearButton").show();
 });
 
 $("#versions-select2").select2({
@@ -220,14 +222,18 @@ $("#versions-select2").select2({
 $("#versions-select2").on("change", function(){
      window.selectedVersionId = $("#versions-select2").select2('val');
      $("#findButton").show();
+     $("#clearButton").show();
 });
 
 $("#findByName").on("click", function() {
      $("#findButton").show();
+     $("#clearButton").show();
      window.inputtedData = $(".names-select2").select2('val');
      //тут дополнительные условия поиска
      $('#moreConditionsGroup').show();
 });
+
+
 
 function addCondition (number) {
      return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = "selectCondition' + number + 'Text">';
@@ -345,6 +351,19 @@ $("#findButton").on("click", function() {
      });
 });
 
+$("#clearButton").on("click", function() {
+     $('#loading').hide();
+     $("#table_id").hide();
+     delete window.inputtedData;
+     delete window.selectedSoftId;
+     delete window.selectedVersionId;
+     delete window.selectedLocationId;
+     $(".names-select2").empty().trigger('change');
+     $(".locations-select2").empty().trigger('change'); 
+     $("#versions-select2").empty().trigger('change');
+     $("#versionsGroup").hide();
+
+});
 
 </script>
 

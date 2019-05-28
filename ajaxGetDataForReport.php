@@ -6,18 +6,13 @@ $softName = $DB->escape($_GET['softName']);
 $softId = $DB->escape($_GET['softId']);
 $versionId = $DB->escape($_GET['versionId']);
 $locationId = $DB->escape($_GET['locationId']);
-print '<pre>';
-print_r($_GET);
-print '</pre>';
 
-$conditions = [];
+$extraNameConditions = [];
 foreach (array_keys($_GET) as $key) {
 
     if (strpos($key, 'selectCondition') !== false && (bool)strpos($key, 'Text') != true) {
-        $conditions[$_GET[$key]] = $_GET[$key . 'Text'];
+        $extraNameConditions[$_GET[$key]] = $_GET[$key . 'Text'];
     }
-
-
 }
 
 if ( !empty($softName)) {
@@ -30,15 +25,30 @@ if ( !empty($softName)) {
             INNER JOIN
                 glpi_softwareversions sv ON sv.softwares_id = s.id
             WHERE s.name LIKE '%" . $softName . "%'
-    )
-    ";
-    /*
-    if (!empty($conditions)) {
-        foreach ($conditions as $condition => $value) {
-
+    )";
+    
+    if (!empty($extraNameConditions)) {
+        /*
+        если были заданы дополнительные параметры для имени ПО 
+        вида
+            [IN] => 123
+            [NOT IN] => 321
+        */
+        foreach ($extraNameConditions as $condition => $value) {
+            $valueSafe = $DB->escape($value);
+            if ($valueSafe) {
+                if ($condition == 'IN') {
+                    $addString = " AND s.name LIKE '%$valueSafe%' )";
+                    //mb_strcut($sqlSoft, 0, strlen($sqlSoft) - 1) - убираем ) в конце $sqlSoft
+                    $sqlSoft = mb_strcut($sqlSoft, 0, strlen($sqlSoft) - 1) . $addString;
+                } elseif ($condition == 'NOT IN') {
+                    $addString = " AND s.name NOT LIKE '%$valueSafe%' )";
+                    $sqlSoft = mb_strcut($sqlSoft, 0, strlen($sqlSoft) - 1) . $addString;
+                }
+            }
         }
     }
-    */
+    
 } else {
     die;
 }
@@ -118,7 +128,6 @@ $sql = "
     ORDER BY
         pc.name	
 ";
-//print_r($sql);
 
 $result = $DB->query($sql);
 
