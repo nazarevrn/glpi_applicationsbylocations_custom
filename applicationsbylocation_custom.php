@@ -74,6 +74,7 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 
 <div id = "moreConditionsGroup" style = "display: none">
      <input type = "button" id = "addCondition" value = "добавить условие" style="width: 10%">
+     <input type = "button" id = "deleteCondition" value = "Удалить условие" style="width: 10%; display: none">
      <form id = "moreConditionsForm">
      </form>
 </div>
@@ -239,7 +240,7 @@ function addCondition (number) {
      return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = "selectCondition' + number + 'Text">';
 }
 $('#addCondition').on('click', function () {
-     //let condition = '<span><select><option>Содержит</option><option>Не содержит</option></select><input type = "text"></span>';
+     $('#deleteCondition').show();
      if (!window.addConditionNumber) {
           window.addConditionNumber = 0;
      }
@@ -247,6 +248,13 @@ $('#addCondition').on('click', function () {
      //window.addConditionNumber++;
 });
 
+$('#deleteCondition').on('click', function(){
+     let selectorSelect = "[name = selectCondition" + window.addConditionNumber + "]";
+     let selectorText = "[name = selectCondition" + window.addConditionNumber + "Text]";
+     $(selectorSelect).remove();
+     $(selectorText).remove();
+     window.addConditionNumber--;
+});
 
 </script>
 
