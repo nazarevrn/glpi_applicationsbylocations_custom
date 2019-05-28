@@ -6,11 +6,19 @@ $softName = $DB->escape($_GET['softName']);
 $softId = $DB->escape($_GET['softId']);
 $versionId = $DB->escape($_GET['versionId']);
 $locationId = $DB->escape($_GET['locationId']);
-
 print '<pre>';
 print_r($_GET);
 print '</pre>';
-die;
+
+$conditions = [];
+foreach (array_keys($_GET) as $key) {
+
+    if (strpos($key, 'selectCondition') !== false && (bool)strpos($key, 'Text') != true) {
+        $conditions[$_GET[$key]] = $_GET[$key . 'Text'];
+    }
+
+
+}
 
 if ( !empty($softName)) {
     $sqlSoft = "
@@ -24,6 +32,13 @@ if ( !empty($softName)) {
             WHERE s.name LIKE '%" . $softName . "%'
     )
     ";
+    /*
+    if (!empty($conditions)) {
+        foreach ($conditions as $condition => $value) {
+
+        }
+    }
+    */
 } else {
     die;
 }

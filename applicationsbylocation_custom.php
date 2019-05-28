@@ -230,7 +230,7 @@ $("#findByName").on("click", function() {
 });
 
 function addCondition (number) {
-     return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = conditionText' + number + '>';
+     return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = "selectCondition' + number + 'Text">';
 }
 $('#addCondition').on('click', function () {
      //let condition = '<span><select><option>Содержит</option><option>Не содержит</option></select><input type = "text"></span>';
@@ -277,47 +277,43 @@ $('#addCondition').on('click', function () {
     //$.v1_11_0 = $v1_11_0;
 
 
+function addToData(data,params) {
+     for (const key in params) {
+          data.push({
+               name: key,
+               value: params[key]
+          });
+     }
 
+     // it doesn't matter at all
+     // this f*ckin' js already changed your data variable
+     // pam-pam
+     return data;
+}
 
 $("#findButton").on("click", function() {
      // console.log(window.inputtedData);
      // console.log(window.selectedSoftId);
      // console.log(window.selectedVersionId);
      // console.log(window.selectedLocationId);
-     /*
-     if (window.inputtedData) {
-          if (window.addConditionNumber) {
-               conditionsTypes = $('[id ^= selectCondition]');
-               //console.log(a);
-               conditionsText = $('[id ^= conditionText]');
-               //console.log(b);
-               //window.conditionsArray = new Map();
-               window.conditionsArray = [];
-               for ( let i = 0; i < conditionsTypes.length; i++) {
-                    //сопоставляем условия {"IN" => "123", "NOT IN" => "321"}
-                    window.conditionsArray[$('#' + conditionsTypes[i].id).val()] = $('#' + conditionsText[i].id).val();
-               }
-          }
-     }
-     */
-    let moreConditions = '';
-     if (window.addConditionNumber) {   //если были заданы дополнительные условия
-          moreConditions = $('#moreConditionsForm').serialize();
+     
+     let data = new Array();
+     if(window.addConditionNumber) {
+          data = $('#moreConditionsForm').serializeArray();
      }
 
+     let otherParams =  {
+        "softName": window.inputtedData,
+        "softId": window.selectedSoftId,
+        "versionId": window.selectedVersionId,
+        "locationId": window.selectedLocationIdprint,
+    };
 
      $.ajax({
           url: "ajaxGetDataForReport.php",
           type: "GET",
           dataType: "json",
-          data :
-               {
-               "softName"        : window.inputtedData,
-               "softId"          : window.selectedSoftId,
-               "versionId"       : window.selectedVersionId,
-               "locationId"      : window.selectedLocationIdprint,
-               "moreConditions"  : moreConditions
-               },
+          data: addToData(data,otherParams),
           beforeSend: function() {
                $("#table_id").hide();
                $('#loading').show();
