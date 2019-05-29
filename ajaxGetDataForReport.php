@@ -78,7 +78,7 @@ if ( !empty($softName)) {
     die;
 }
 
-if ( !empty($softId) ) {
+if ( !empty($softId) && is_numeric($softId) ) {
     $sqlSoft = "
     ( 		            
         SELECT
@@ -91,11 +91,11 @@ if ( !empty($softId) ) {
     )";
 }
 
-if ( !empty($versionId) ) {
+if ( !empty($versionId) && is_numeric($locationId) ) {
     $sqlSoft = "($versionId)";
 }
 
-if ( !empty($locationId) ) {
+if ( !empty($locationId) && is_numeric($locationId) ) {
     $sqlLocation = " AND pc.locations_id = $locationId";
 }
 

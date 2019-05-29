@@ -32,7 +32,7 @@
  когда я начинал писать этот код, только Бог и я знали, как он работает.
  теперь не знает никто.
  */
-ini_set("display_errors", true);
+ini_set("display_errors", false);
 error_reporting(~E_NOTICE);
 
 $USEDBREPLICATE         = 1;
@@ -40,13 +40,13 @@ $DBCONNECTION_REQUIRED  = 0;
 
 include ("../../../../inc/includes.php");
 
-Html::header(__('histoinst_report_title', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
+Html::header(__('applicationsbylocation_report_title_custom', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
 
 Report::title();
 
 $dbu = new DbUtils();
 
-$report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_custom', 'reports'));
+//$report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_custom', 'reports'));
 
 // Html::header(__('histoinst_report_title', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
 
@@ -373,8 +373,10 @@ $("#findButton").on("click", function() {
 });
 
 $("#clearButton").on("click", function() {
+     /*
      $('#loading').hide();
      $("#table_id").hide();
+     $('#table_id_wrapper').hide();
      delete window.inputtedData;
      delete window.selectedSoftId;
      delete window.selectedVersionId;
@@ -384,6 +386,10 @@ $("#clearButton").on("click", function() {
      $("#versions-select2").empty().trigger('change');
      $("#versionsGroup").hide();
      $("#table_id").hide();
+     */
+    //location.reload();
+    let destination = (window.location.href).split("?"); // отрезаем все GET параметры
+    document.location.href = destination[0];
 
 });
 
