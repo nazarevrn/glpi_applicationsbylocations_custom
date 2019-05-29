@@ -303,12 +303,9 @@ $("#findButton").on("click", function() {
      // console.log(window.selectedLocationId);
      
      let data = new Array();
-     if(window.addConditionNumber) {
+     if(window.addConditionNumber) { //если доп параметры были выбраны на странице
           data = $('#moreConditionsForm').serializeArray();
-     }
-
-     if (window.getConditionData) {
-          data = window.getConditionData;
+          //console.log(data);
      }
 
      let otherParams =  {
@@ -318,6 +315,24 @@ $("#findButton").on("click", function() {
         "locationId": window.selectedLocationId,
     };
 
+    if (window.getConditionData) { //если доп параметры пришли из $_GET (грузим отчёт по ссылке)
+          //data = window.getConditionData;
+          //let d = [];
+          let i = 0;
+          let lenCondition = window.getConditionData.length;
+          //let data = new Array();
+          for (i = 0; i < lenCondition; i += 2) {
+               //console.log(window.getConditionData[i], window.getConditionData[i + 1]);
+               data.push({
+                    name : window.getConditionData[i],
+                    value: window.getConditionData[i + 1]
+               });
+               
+          }
+          //console.log(data);
+          console.log(data);
+     }
+
      $.ajax({
           url: "ajaxGetDataForReport.php",
           type: "GET",
@@ -326,6 +341,7 @@ $("#findButton").on("click", function() {
           beforeSend: function() {
                $("#table_id").hide();
                $('#loading').show();
+               console.log(addToData(data,otherParams));
           },
           success: function (data) {  
                $('#loading').hide();
@@ -412,7 +428,7 @@ $("#clearButton").on("click", function() {
                let attributeName = condition;
                let attributeText = $_GET[condition];
                
-               console.log(attributeText);
+               //console.log(attributeText);
 
                if (attributeName.indexOf('selectCondition') != -1) {
                     //console.log(attributeName, attributeText);
@@ -423,7 +439,7 @@ $("#clearButton").on("click", function() {
           }
      }
 
-     if ($_GET.softName || $_GET.softId || $_GET.versionId || $_GET.locationId) {
+     if ($_GET.softName || $_GET.softId || $_GET.versionId || $_GET.locationId || $_GET.selectCondition1) {
           $('#findButton').trigger('click');
      }
 

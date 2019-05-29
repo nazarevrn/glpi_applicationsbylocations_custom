@@ -529,7 +529,7 @@ GROUP BY
 ORDER BY
 	pc.name	
 
-http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/applicationsbylocation_custom.php?selectCondition1=NOT+IN&selectCondition1Text=Libre&selectCondition2=IN&selectCondition2Text=Update
+http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/applicationsbylocation_custom.php?selectCondition1=NOT+IN&selectCondition1Text=Libre&selectCondition2=IN&selectCondition2Text=Update&softName=office
 
 
 У нас на работе адовый код.
@@ -548,4 +548,31 @@ http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/applicatio
 Потом это передаётся на поддержку джуну и ставится задача
 найти ошибки. Надо ли говорить, что гемморой это дикий!
 
-http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/applicationsbylocation_custom.php?softName=office&softId=&versionId=&locationId=
+http://10.0.0.52/plugins/reports/report/applicationsbylocation_custom/applicationsbylocation_custom.php?softName=office&softId=&versionId=&locationId=&selectCondition1=NOT+IN&selectCondition1Text=Libre&selectCondition2=IN&selectCondition2Text=Update
+
+
+let d = [];
+let i = 0;
+let lenCondition = window.getConditionData.length;
+
+for (i = 0; i < lenCondition; i + 2) {
+	d.push({
+		name : window.getConditionData[i],
+		value: window.getConditionData[i + 1]
+	});
+}
+
+console.log(d);
+
+
+let d = [];
+let i = 0;
+let lenCondition = window.getConditionData.length;
+
+for (i = 0; i < lenCondition; i += 2) {
+	console.log(window.getConditionData[i], window.getConditionData[i + 1]);
+		d.push({
+		name : window.getConditionData[i],
+		value: window.getConditionData[i + 1]
+	});
+}
