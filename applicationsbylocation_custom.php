@@ -64,10 +64,11 @@ $report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_cu
 </span> -->
 
 <div id = "moreConditionsGroup" style = "display: none">
-     <input type = "button" id = "addCondition" value = "добавить условие" style="width: 10%">
-     <input type = "button" id = "deleteCondition" value = "Удалить условие" style="width: 10%; display: none">
      <form id = "moreConditionsForm">
      </form>
+     <input type = "button" id = "addCondition" value = "Добавить условие" style="width: 10%">
+     <input type = "button" id = "deleteCondition" value = "Удалить условие" style="width: 10%; display: none">
+     <br>
 </div>
 <div id = "versionsGroup">
      <p>Укажите версию</p>
