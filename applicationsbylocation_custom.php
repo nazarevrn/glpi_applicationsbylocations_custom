@@ -228,7 +228,7 @@ $("#findByName").on("click", function() {
 
 
 function addCondition (number) {
-     return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = "selectCondition' + number + 'Text">';
+     return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = "selectCondition' + number + 'Text"><br>';
 }
 $('#addCondition').on('click', function () {
      $('#deleteCondition').show();
@@ -306,11 +306,15 @@ $("#findButton").on("click", function() {
           data = $('#moreConditionsForm').serializeArray();
      }
 
+     if (window.getConditionData) {
+          data = window.getConditionData;
+     }
+
      let otherParams =  {
         "softName": window.inputtedData,
         "softId": window.selectedSoftId,
         "versionId": window.selectedVersionId,
-        "locationId": window.selectedLocationIdprint,
+        "locationId": window.selectedLocationId,
     };
 
      $.ajax({
@@ -360,6 +364,7 @@ $("#clearButton").on("click", function() {
      $(".locations-select2").empty().trigger('change'); 
      $("#versions-select2").empty().trigger('change');
      $("#versionsGroup").hide();
+     $("#table_id").hide();
 
 });
 //
@@ -399,15 +404,19 @@ $("#clearButton").on("click", function() {
      }
 
      if ($_GET.selectCondition1) {//заданы дополнительные условия для softName (будь они неладны)
+          window.getConditionData = new Array();
           for (let condition in $_GET) {
                // condition
                // selectCondition1
                let attributeName = condition;
                let attributeText = $_GET[condition];
                
+               console.log(attributeText);
 
                if (attributeName.indexOf('selectCondition') != -1) {
-                    console.log(attributeName, attributeText);
+                    //console.log(attributeName, attributeText);
+
+                    window.getConditionData.push(attributeName, attributeText);
                }
 
           }

@@ -1,10 +1,7 @@
 <?php
 
 include ("../../../../inc/includes.php");
-// print '<pre>';
-// print_r($_GET);
-// print '</pre>';
-// die;
+
 $softName = $DB->escape($_GET['softName']);
 $softId = $DB->escape($_GET['softId']);
 $versionId = $DB->escape($_GET['versionId']);
@@ -13,8 +10,8 @@ $locationId = $DB->escape($_GET['locationId']);
 $extraNameConditions = [];
 foreach (array_keys($_GET) as $key) {
 
-    if (strpos($key, 'selectCondition') !== false && (bool)strpos($key, 'Text') != true) {
-        $extraNameConditions[$_GET[$key]] = $_GET[$key . 'Text'];
+    if (strpos($key, 'selectCondition') !== false && strlen($key) < 20) { // оствляем только ключи вида selectCondition* . Им соответствует условие IN или NOT IN
+        $extraNameConditions[] = [$_GET[$key] => $_GET[$key . 'Text']];          // ключу вида selectCondition* соответствует ключ selectCondition*Text. А сам текст $_GET[selectCondition*Text]
     }
 }
 
@@ -34,11 +31,35 @@ if ( !empty($softName)) {
         /*
         если были заданы дополнительные параметры для имени ПО 
         вида
-            [IN] => 123
-            [NOT IN] => 321
+        Array
+        (
+            [0] => Array
+                (
+                    [NOT IN] => 123
+                )
+
+            [1] => Array
+                (
+                    [IN] => 321
+                )
+
+            [2] => Array
+                (
+                    [NOT IN] => 111
+                )
+
+        )
         */
-        foreach ($extraNameConditions as $condition => $value) {
-            $valueSafe = $DB->escape($value);
+        foreach ($extraNameConditions as $key => $oneConditionData) {
+            /*
+            array_keys($oneConditionData)[0] - условие IN или NOT IN
+            array_shift($condition) - текст условия
+            */
+
+            $condition = array_keys($oneConditionData)[0];
+            $conditionText = array_shift($oneConditionData);
+            $valueSafe = $DB->escape($conditionText);
+
             if ($valueSafe) {
                 if ($condition == 'IN') {
                     $addString = " AND s.name LIKE '%$valueSafe%' )";
@@ -49,6 +70,7 @@ if ( !empty($softName)) {
                     $sqlSoft = mb_strcut($sqlSoft, 0, strlen($sqlSoft) - 1) . $addString;
                 }
             }
+            
         }
     }
     
@@ -95,7 +117,7 @@ $sql = "
     INNER JOIN 
         glpi_users us ON us.name = pc.contact
     LEFT JOIN
-        glpi_locations l ON l.id = us.locations_id " . $sqlLocation . "
+        glpi_locations l ON l.id = pc.locations_id 
     LEFT JOIN
         glpi_computers_softwareversions pc_ver_2
         ON
