@@ -344,6 +344,10 @@ $("#findButton").on("click", function() {
                          {data: 'installDate'},
                     ]
                });               
+          },
+          error: function () {
+               $('#loading').hide();
+               alert('Запрос вызвал ошибку, поробуйте изменить параметры поиска!');
           }
      });
 });
