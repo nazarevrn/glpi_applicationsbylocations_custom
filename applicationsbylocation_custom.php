@@ -44,33 +44,19 @@ Html::header(__('applicationsbylocation_report_title_custom', 'reports'), $_SERV
 
 Report::title();
 
-$dbu = new DbUtils();
-
-//$report = new PluginReportsAutoReport(__('applicationsbylocation_report_title_custom', 'reports'));
-
-// Html::header(__('histoinst_report_title', 'reports'), $_SERVER['PHP_SELF'], "utils", "report");
-
-// Report::title();
-
 ?>
 <span>
 <select class = "names-select2" name="selected[]" ></select>
 <input type = "button" id = "findByName" value = "Задать имя для поиска" style="width: 10%">
 <select class = "locations-select2" ></select>
 </span>
-<!-- <br>
-<span>
-<input type = "button" id = "#show-export" value = "Показать варианты экспорта" style="width: 10%; display: none;">
-</span> -->
 
 <div id = "moreConditionsGroup" style = "display: none">
      <form id = "moreConditionsForm">
      </form>
      <input type = "button" id = "addCondition" value = "Добавить условие" style="width: 10%">
-     <input type = "button" id = "deleteCondition" value = "Удалить условие" style="width: 10%; display: none">
-     <br>
 </div>
-<div id = "versionsGroup">
+<div id = "versionsGroup" style = "display: none">
      <p>Укажите версию</p>
      <select id = "versions-select2" ></select>
 </div>
@@ -79,7 +65,6 @@ $dbu = new DbUtils();
      <input type = "button" id = "clearButton" value = "Очистить" style = "display: none">
      <input type = "button" id = "shareButton" value = "Скопировать ссылку на отчёт" style = "display: none">
 </div>
-
 <br>
 <br>
 <br>
@@ -111,10 +96,6 @@ $dbu = new DbUtils();
 
 <script>
 
-$("#versionsGroup").hide();
-
-// $("#findButton").hide();
-
 $(".names-select2").select2({
      tags: true,
      minimumInputLength: 1,
@@ -143,7 +124,6 @@ $(".names-select2").select2({
 
 
 });
-
 
 $(".names-select2").on("change", function(){
 
@@ -230,24 +210,28 @@ $("#findByName").on("click", function() {
 
 
 function addCondition (number) {
-     return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = "selectCondition' + number + 'Text"><br>';
+     return '<select name = "selectCondition' + number + '"><option value = "IN">Содержит</option><option value = "NOT IN">Не содержит</option></select><input type = "text" name = "selectCondition' + number + 'Text"><input type = "button" class = "deleteCondition" value = "Удалить условие" style="width: 10%" name = "' + number + '"><br>';
 }
 $('#addCondition').on('click', function () {
-     $('#deleteCondition').show();
      if (!window.addConditionNumber) {
           window.addConditionNumber = 0;
      }
      $('#moreConditionsForm').append(addCondition(++window.addConditionNumber));
-     //window.addConditionNumber++;
+
 });
 
-$('#deleteCondition').on('click', function(){
-     let selectorSelect = "[name = selectCondition" + window.addConditionNumber + "]";
-     let selectorText = "[name = selectCondition" + window.addConditionNumber + "Text]";
+$('#moreConditionsForm').on('click', '.deleteCondition', function(){
+
+     let numberDeleteCondition = $(this).attr('name');
+     let selectorSelect = "[name = selectCondition" + numberDeleteCondition + "]";
+     let selectorText = "[name = selectCondition" + numberDeleteCondition + "Text]";
+
      $(selectorSelect).remove();
      $(selectorText).remove();
-     window.addConditionNumber--;
+     $(this).hide();
+
 });
+
 
 </script>
 
@@ -306,7 +290,6 @@ $("#findButton").on("click", function() {
      let data = new Array();
      if(window.addConditionNumber) { //если доп параметры были выбраны на странице
           data = $('#moreConditionsForm').serializeArray();
-          //console.log(data);
      }
 
      let otherParams =  {
@@ -317,21 +300,16 @@ $("#findButton").on("click", function() {
     };
 
     if (window.getConditionData) { //если доп параметры пришли из $_GET (грузим отчёт по ссылке)
-          //data = window.getConditionData;
-          //let d = [];
           let i = 0;
           let lenCondition = window.getConditionData.length;
-          //let data = new Array();
+
           for (i = 0; i < lenCondition; i += 2) {
-               //console.log(window.getConditionData[i], window.getConditionData[i + 1]);
                data.push({
                     name : window.getConditionData[i],
                     value: window.getConditionData[i + 1]
                });
                
           }
-          //console.log(data);
-          //console.log(data);
      }
 
      $.ajax({
@@ -342,7 +320,6 @@ $("#findButton").on("click", function() {
           beforeSend: function() {
                $("#table_id").hide();
                $('#loading').show();
-               //console.log(addToData(data,otherParams));
           },
           success: function (data) {  
                $('#loading').hide();
@@ -350,9 +327,8 @@ $("#findButton").on("click", function() {
                $("#shareButton").show();             
                $v3_3_1("#table_id").dataTable({
                     destroy: true,
-                    lengthMenu: [ 25, 50, 75, 100 ],
+                    lengthMenu: [ 50, 100, 250, 500, 1000 ],
                     select: true,
-                    //dom: 'Bfrtip',
                     dom: 'lfBrtip',
                     buttons: [
                               'copy', 'csv', 'excel', 'pdf'
@@ -373,29 +349,12 @@ $("#findButton").on("click", function() {
 });
 
 $("#clearButton").on("click", function() {
-     /*
-     $('#loading').hide();
-     $("#table_id").hide();
-     $('#table_id_wrapper').hide();
-     delete window.inputtedData;
-     delete window.selectedSoftId;
-     delete window.selectedVersionId;
-     delete window.selectedLocationId;
-     $(".names-select2").empty().trigger('change');
-     $(".locations-select2").empty().trigger('change'); 
-     $("#versions-select2").empty().trigger('change');
-     $("#versionsGroup").hide();
-     $("#table_id").hide();
-     */
-    //location.reload();
     let destination = (window.location.href).split("?"); // отрезаем все GET параметры
     document.location.href = destination[0];
 
 });
 
-
-//
-
+//Всё, что ниже нужно для того, что бы отчёт формировался при переходе по ссылке
 
 function getQueryParams(qs) {
      qs = qs.split("+").join(" ");
@@ -413,7 +372,6 @@ return params;
 
 var $_GET = getQueryParams(document.location.search);
 
-//Всё, что ниже нужно для того, что бы отчёт формировался при переходе по ссылке
 if ($_GET.softName) { 
      window.inputtedData = $_GET.softName; //проверка ввода есть на бэке
 }
@@ -438,11 +396,7 @@ if ($_GET.selectCondition1) {//заданы дополнительные усл�
           let attributeName = condition;
           let attributeText = $_GET[condition];
           
-          //console.log(attributeText);
-
           if (attributeName.indexOf('selectCondition') != -1) {
-               //console.log(attributeName, attributeText);
-
                window.getConditionData.push(attributeName, attributeText);
           }
 
@@ -459,7 +413,6 @@ if ($_GET.softName || $_GET.softId || $_GET.versionId || $_GET.locationId || $_G
 <script>
 
 $('#shareButton').on('click', function() {
-//console.log($_GET);
 
 if (!$_GET.selectCondition1) {     //пришли не по ссылке
      let link = window.location.href + '?' + 'softName=' + (window.inputtedData ? window.inputtedData.replace(/ /g, '+') : '') + '&softId=' + 
@@ -467,39 +420,20 @@ if (!$_GET.selectCondition1) {     //пришли не по ссылке
       + '&locationId=' +  (window.selectedLocationId ? window.selectedLocationId : '');
 
      let extraConditions = $('#moreConditionsForm').serializeArray();
-     //console.log(link);
 
      if (extraConditions) {
           let i;
           for (i = 0; i < extraConditions.length; i++) {
-          //console.log(a[index]);
           link = link + '&' + (extraConditions[i].name).replace(/ /g, '+') + '=' + (extraConditions[i].value).replace(/ /g, '+');
-          //console.log(extraConditions[i]);
           }
 
      }
 
-     //console.log(link);
-
      $('#shareButton').attr('data-clipboard-text', link);
 
      var clipboard = new ClipboardJS('#shareButton');
-     /*
-     clipboard.on('success', function(e) {
-          console.log(e);
-     });
-     clipboard.on('error', function(e) {
-          console.log(e);
-     });
-     */
 }
 
 });
 
-
-
 </script>
-
-
-
-
