@@ -155,11 +155,11 @@ $sql = "
 ";
 
 $result = $DB->query($sql);
-
-$linkForSoft    =   'http://' . $_SERVER['HTTP_HOST'] . '/front/software.form.php?id=';
-$linkForVersion =   'http://' . $_SERVER['HTTP_HOST'] . '/front/softwareversion.form.php?id=';
-$linkForPc      =   'http://' . $_SERVER['HTTP_HOST'] . '/front/computer.form.php?id=';
-$linkforUser    =   'http://' . $_SERVER['HTTP_HOST'] . '/front/user.form.php?id=';
+$prefix = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+$linkForSoft    =   $prefix . '/front/software.form.php?id=';
+$linkForVersion =   $prefix . '/front/softwareversion.form.php?id=';
+$linkForPc      =   $prefix . '/front/computer.form.php?id=';
+$linkforUser    =   $prefix . '/front/user.form.php?id=';
 
 while ($data = $DB->fetch_assoc($result)) {
 
